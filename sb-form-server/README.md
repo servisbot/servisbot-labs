@@ -1,9 +1,10 @@
 
 # SB-FORM-SERVER
 
-Is a service hosting [Form.io](https://github.com/formio/formio) forms, it emails submissions to pre-configured email address.
+Is a service hosting [Form.io](https://github.com/formio/formio) forms, that is used to email submissions to pre-configured email address.
 
-It was built to be used in a ServisBOT's conversational bots - you can use <DetailView> Markup to display your form, have user fill it in and upon submission it will be sent to your chosen email.
+It was built for the use with a ServisBOT's conversational bots via DetailView Markup. The bot will display your form, have user fill it in and upon submission it will be sent to your chosen email.
+
 
 ## Prerequisites
 
