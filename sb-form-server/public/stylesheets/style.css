@@ -1,0 +1,31 @@
+.heading {
+  color:#224998;
+  font-size:1.4em;
+}
+
+body {
+  margin:6px;
+}
+.panel-default {
+  /* border:0; */
+}
+.card-title {
+  font-size: 16px;
+}
+.card-header {
+  border:0;
+  padding: 10px 15px;
+  color:#224998 !important;
+  background:#fff;
+  font-weight:500;
+}
+
+.card-body {
+  padding: 15px
+}
+
+.form-control {
+  border:0;
+  border-color:#000;
+  border-bottom:1px solid #000;
+  background-color:#f1f4fe;

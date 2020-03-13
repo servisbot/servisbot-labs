@@ -1,0 +1,18 @@
+
+block header
+
+  link(rel='stylesheet', href='/stylesheets/style.css')
+
+block content
+  div(id="container")
+    h1(class="heading") Thanks For Your Details
+    p Taking you back to your conversation
+  
+  script.
+    setTimeout(() => {
+        window.parent.parent.postMessage({
+          type: "completeServisBotTask",
+            message: { id: "some id", data: "some data"},
+            closeOnComplete: true,
+          }, "*");
+    }, 2000);

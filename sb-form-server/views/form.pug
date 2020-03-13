@@ -1,0 +1,12 @@
+extends layout
+
+block header
+  link(rel='stylesheet', href='/stylesheets/font-awesome.min.css')
+  link(rel='stylesheet', href='/stylesheets/formio.full.min.css')
+  link(rel='stylesheet', href='/stylesheets/style.css')
+  script(src='/javascripts/formio.full.min.js')
+  script.
+    formName="#{formName}";
+  script(src='/javascripts/render-form.js')
+block content
+  div(id='formio')
