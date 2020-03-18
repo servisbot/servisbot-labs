@@ -1,7 +1,7 @@
 
 # SB-FORM-SERVER
 
-ServisBOT's form server is a small service allowing you to capture submissions for your form templates using [Form.io](https://github.com/formio/formio).
+ServisBOT's form server is a small service allowing you to capture submissions for your form templates using [Form.io](https://github.com/formio/formio) and forward these submissions to a configured email address.
 
 ## Running
 ### Run with Docker
@@ -12,7 +12,7 @@ Open terminal and navigate to the unzipped directory of this project. e.g. `cd $
 build docker image by running  
 `docker build -t sb-form-server .`
 
-To run this container you will need: 
+To run this container you will need:
 - A directory with your [Form.io](https://github.com/formio/formio) forms templates.
   For now we can use testing form located in  
   `{SB-FORM-SERVER DIRECTORY}/test/fixtures/templates`  
@@ -47,6 +47,21 @@ you should see "sb-form-server:server Listening on port 3000" message in your te
 In your browser go to http://localhost:3000/forms/myform you should see the form, upon submission you will get an email if the details in the `.env` file are correct.
 
 
- 
+## Usage With ServisBOT
+Note: In order to display forms to your servisBOT users, the service must serve via HTTPS.
 
+Use the following markup to display the form:
+<TimelineMessage>
+  <DetailView
+    title="My Form"
+    description="Click Here to display MyForm"
+    url="https://<your hostname/forms/<myform>"
+    interactionType="event"
+  />
+</TimelineMessage>
 
+If you are using Classic Flow, you should use a markupInteraction node. This will have three outputs:
+
+1, Form Completed
+2, Form Cancelled
+3, User Freetyped before instead of displaying the form.
