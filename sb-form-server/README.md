@@ -3,7 +3,7 @@
 
 Is a service hosting [Form.io](https://github.com/formio/formio) forms, that is used to email submissions to pre-configured email address.
 
-It was built for the use with a ServisBOT's conversational bots via DetailView Markup. The bot will display your form, have user fill it in and upon submission it will be sent to your chosen email.
+It was built for the use with a ServisBOT's conversational bots via DetailView Markup. The bot will display your form, users can fill out the form and upon submission it will be sent to your configured email address.
 
 
 ## Prerequisites
@@ -62,6 +62,22 @@ docker run -p "3000:3000" \
 ```
 In your browser navigate to http://localhost:3000/forms/{FILE_NAME_OF_YOUR_FORM}
 
- 
+## Usage With ServisBOT
+Note: In order to display forms to your servisBOT users, the service must serve via HTTPS.
 
+Use the following markup to display the form:
+```
+<TimelineMessage>
+  <DetailView
+    title="My Form"
+    description="Click Here to display MyForm"
+    url="https://<your hostname/forms/<myform>"
+    interactionType="event"
+  />
+</TimelineMessage>
+```
+If you are using Classic Flow, you should use a markupInteraction node. This will have three outputs:
 
+1, Form Completed
+2, Form Cancelled
+3, User Freetyped before instead of displaying the form.
