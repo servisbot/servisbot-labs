@@ -1,56 +1,73 @@
 
 # SB-FORM-SERVER
 
-ServisBOT's form server is a small service allowing you to capture submissions for your form templates using [Form.io](https://github.com/formio/formio) and forward these submissions to a configured email address.
+Is a service hosting [Form.io](https://github.com/formio/formio) forms, that is used to email submissions to pre-configured email address.
 
-## Running
-### Run with Docker
-To run this service locally you can use [Docker](https://docs.docker.com/install/).
-Make sure you have docker service installed and running.
-Download and unzip or clone this repository `git clone { REPO }` to your machine.
-Open terminal and navigate to the unzipped directory of this project. e.g. `cd $HOME/Downloads/sb-form-server`
-build docker image by running  
-`docker build -t sb-form-server .`
 
-To run this container you will need:
-- A directory with your [Form.io](https://github.com/formio/formio) forms templates.
-  For now we can use testing form located in  
-  `{SB-FORM-SERVER DIRECTORY}/test/fixtures/templates`  
-  e.g. `$HOME/Downloads/sb-form-server/test/fixtures/templates`
-- SMTP server or relay, you can get free account on multiple providers: ([sendgrid.com](sendgrid.com), [https://www.mailjet.com/](https://www.mailjet.com/) or [https://www.mailgun.com/](https://www.mailgun.com/))
-- `.env` file with your email configuration.  You will find `.env-example` file in the `sb-form-server` directory rename it to `.env`, or just run  
-`cp .env-example .env`
-fill in your SMTP details.
-```
-PORT=3000
-DEBUG=sb-form-server:*
-NODE_ENV=production
+It was built for the use with a ServisBOT's conversational bots via DetailView Markup. The bot will display your form, users can fill out the form and upon submission it will be sent to your configured email address.
 
-MAIL_TO=YOUR_EMAIL_ADDRESS
-MAIL_FROM=YOUR_EMAIL_ADDRESS
-SMTP_HOST=smtp.host.domain
-SMTP_PORT=587
-SMTP_USER=USERNAME
-SMTP_PASS=PASSWORD
-```
 
-Once you get all of the above you are ready to run the service:
+## Prerequisites
 
-```sh
-docker run -p "3000:3000" \
--v $HOME/sb-form-server/test/fixtures/templates:/opt/sb-form-templates \
---env-file=.env \
---name=sb-form-server --rm sb-form-server:latest
-```
-you should see "sb-form-server:server Listening on port 3000" message in your terminal.
+* Docker Container Runtime (https://www.docker.com/products/container-runtime)
+* SMTP Server or Relay configuration - host, port, username and password.  
+  Search for "Free SMTP relay" to get number of providers, many offer free accounts.
+
+
+## Run with Docker
+* Make sure you have docker service installed and running.
+* Download and unzip this project to directory on your machine.
+* Open terminal and navigate to the unzipped directory of this project.   
+  `cd $HOME/Downloads/servisbot-labs/sb-form-server`
+* open `.env-example` file with text editor and fill in your details
+  ```sh
+    PORT=3000
+    DEBUG=sb-form-server:*
+    NODE_ENV=production
+
+    MAIL_TO=YOUR_EMAIL_ADDRESS
+    MAIL_FROM=YOUR_EMAIL_ADDRESS
+    SMTP_HOST=YOUR_SMTP_HOST
+    SMTP_PORT=YOUR_SMTP_PORT
+    SMTP_USER=YOUR_SMTP_USERNAME
+    SMTP_PASS=YOUR_SMTP_PASSWORD
+  ```
+* build docker image by typing following in your terminal
+  ```sh
+  docker build -t sb-form-server .
+  ```
+* Copy paste following into your terminal
+  ```sh
+  docker run -p "3000:3000" \
+  -v /test/fixtures/templates:/opt/sb-form-templates \
+  --env-file=.env-example \
+  --name=sb-form-server sb-form-server:latest \
+  --rm
+  ```
+  You may get a docker error about the path not being shared, followed the instructions in the error log to be able to mount that directory.
+
+When you complete all steps above and the container runs you should see "sb-form-server:server Listening on port 3000" message in your terminal.
 
 In your browser go to http://localhost:3000/forms/myform you should see the form, upon submission you will get an email if the details in the `.env` file are correct.
 
+## Using your own forms
+* Make sure you have a directory with form definitions on your local machine
+* Add this directory to shared files in docker settings
+* Replace YOUR_FORMS_DEFINITIONS_DIR in the following and run this command terminal
+```
+docker run -p "3000:3000" \
+  -v YOUR_FORMS_DEFINITIONS_DIR:/opt/sb-form-templates \
+  --env-file=.env-example \
+  --name=sb-form-server sb-form-server:latest \
+  --rm
+```
+In your browser navigate to http://localhost:3000/forms/{FILE_NAME_OF_YOUR_FORM}
 
 ## Usage With ServisBOT
 Note: In order to display forms to your servisBOT users, the service must serve via HTTPS.
 
 Use the following markup to display the form:
+```
 <TimelineMessage>
   <DetailView
     title="My Form"
@@ -59,7 +76,7 @@ Use the following markup to display the form:
     interactionType="event"
   />
 </TimelineMessage>
-
+```
 If you are using Classic Flow, you should use a markupInteraction node. This will have three outputs:
 
 1, Form Completed
