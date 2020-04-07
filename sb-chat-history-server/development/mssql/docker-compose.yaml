@@ -1,0 +1,7 @@
+version: "3.7"
+services:
+  mssql-db:
+    build: ./
+    ports:
+      - "1433:1433"
+    restart: always

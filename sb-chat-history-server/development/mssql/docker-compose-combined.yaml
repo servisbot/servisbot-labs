@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+  mssql:
+    build: ./
+    ports:
+      - "1433:1433"
+    restart: on-failure
+  rchs-local:
+    build: ../../
+    ports:
+      - "8080:8080"
+    env_file: 
+        - sample-combined-compose.env
+    environment:
+      WAIT_HOSTS: mssql:1433
+    restart: on-failure
