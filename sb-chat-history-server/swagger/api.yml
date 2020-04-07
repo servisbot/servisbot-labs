@@ -1,0 +1,242 @@
+swagger: '2.0'
+info:
+  title: ServisBOT Chat History Server (CHS)
+  version: '1.0'
+basePath: /
+schemes:
+  - https
+  - http
+
+paths:
+  /about:
+    get:
+      tags:
+      - Health Check
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+              version:
+                type: string
+                description: Version of the CHS
+        '500':
+          description: Server Error
+          schema:
+            type: object
+            properties:
+              err:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  name:
+                    type: string
+              version:
+                type: string
+                description: Version of the CHS
+      produces:
+      - "application/json"
+  /{version}/ping:
+    post:
+      tags:
+        - Health Check
+      parameters:
+        - name: version
+          in: path
+          required: true
+          type: string
+          default: v1
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '500':
+          description: Server Error
+          schema:
+            type: object
+            properties:
+              err:
+                type: string
+              code:
+                type: string
+                description: Version of the CHS
+      produces:
+      - "application/json"
+  /{version}/persist:
+    post:
+      tags:
+        - Persistance
+      parameters:
+        - name: version
+          in: path
+          required: true
+          type: string
+          default: v1
+        - name: message
+          in: body
+          description: message to be persisted
+          schema:
+            $ref: '#/definitions/BaseMessage'                     
+      responses:
+        '200':
+          description: Confirmation that the message was persisted.
+        '409':
+          description: Duplicate item found
+        '500':
+          description: Internal Server Error
+      produces:
+      - "application/json"
+  /{version}/history:
+    get:
+      tags:
+        - History
+      parameters:
+        - name: version
+          in: path
+          required: true
+          type: string
+          default: v1
+        - name: messageId
+          description: if supplied will respond with 50 messages from this message Id to support pagination
+          in: query
+          required: false
+          type: string
+        - name: query
+          in: body
+          description: message to be persisted
+          schema:
+            type: object
+            properties:
+              organization:
+                type: string
+              identity:
+                type: string
+              conversationId:
+                type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/BaseMessage'  
+        '500':
+          description: Internal Server Error
+      produces:
+      - "application/json"
+  /{version}/{organization}/transcript/{conversationId}:
+    get:
+      tags:
+        - Transcript
+      parameters:
+        - name: version
+          in: path
+          required: true
+          type: string
+          default: v1
+        - name: organization
+          in: path
+          required: true
+          type: string
+        - name: conversationId
+          description: conversation id you want to get transcript for
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              Messages: 
+                type: array
+                items:
+                 $ref: '#/definitions/BaseMessage'  
+
+        '500':
+          description: Internal Server Error
+      produces:
+      - "application/json"
+
+definitions:
+  BaseMessage:
+    type: object
+    properties:
+      key:
+        type: string
+        description: Unique combination of type:::conversationId:::timestamp:::messageId
+        example: TIMELINEMESSAGE:::_ctBcIqYu-:::1582022674824:::_ctBcIqYu-
+      conversationId:
+        description: Conversation identifier. ShortId or UUID
+        type: string
+        example: dxig0lgk2y
+      identity:
+        type: string
+        description: User identifier
+        example: eu-west-1:73659d16-e526-4a3f-9044-3ca5b4d35f68
+      id:
+        type: string
+        description: The message identifier.  ShortId or a UUID
+        example: _ctBcIqYu-
+      timestamp:
+        type: number
+        description: The time the message was created
+        example: 1582022674824
+      organization:
+        type: string
+        description: The organization this message belongs to
+        example: my-organization
+      type:
+        type: string
+        description: The ServisBot defined category of the content
+        example: TimelineMessage
+      contentType:
+        type: string
+        description: The ServisBot defined type of the content
+        example: message
+      to:
+        type: string
+        description: The direction of the message.  "server" or "client"
+        example: server
+      version:
+        type: string
+        description: The ServisBot internal message schema version
+        example: v2
+      correlationId:
+        type: string
+        description: The ServisBot correlationId, a shortId
+        example: kwB6sC8Mr
+      contents:
+        type: object
+        description: The contents of the message, can be message or markup with context
+        properties:
+          message:
+            type: string
+            description: The text of the user or bot message
+            example: Hello, how are you?
+          markup:
+            type: string
+            description: The text of the user or bot message represented as ServisBot Markup
+            example: <TextMsg>Hello ${name}</TextMsg>
+          context:
+            description: The context to apply to markup e.g. in this example "name" could contain a value for the markup
+            type: object
+    required: 
+      - key
+      - conversationId
+      - identity
+      - id
+      - timestamp
+      - organization
+      - contentType
+      - to
+      - version
+      - correlationId
+      - contents
+      - type  
