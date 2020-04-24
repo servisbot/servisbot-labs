@@ -12,7 +12,7 @@ API to persist conversation history in a MySQL or MsSQL Database
 
 Artifacts are supplied in the `development` directory to enable development against a docker based MySQL or MsSQL database.
 
-The recommended development path is to use a remote or containerised version of MySQL or MSSQL.
+The recommended development path is to use a remote or containerized version of MySQL or MSSQL.
 
 To start up the conveniently supplied Database (skip this step if you have a local or RDS instance to point at)
 
@@ -53,6 +53,8 @@ export DB_CONNECTION_LIMIT=10
 export APP_VERSION='v1'
 export DB_IMPLEMENTATION=MYSQL
 ```
+
+Optional `DB_DOMAIN` environment variable is supported to MSSQL running in AActive Directory Domain User authentication
 
 # Running the Node app as a container
 

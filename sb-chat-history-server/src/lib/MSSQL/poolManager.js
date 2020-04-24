@@ -1,40 +1,29 @@
 module.exports = class MSSQLPoolManager {
   constructor(env, mssql) {
-    const {
-      DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT, DB_DOMAIN
-    } = env;
-    console.log(env);
+    const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT, DB_DOMAIN } = env;
     this.mssql = mssql;
     this.host = DB_HOST;
     this.user = DB_USER;
     this.domain = DB_DOMAIN === '' ? undefined : DB_DOMAIN;
     this.password = DB_PASSWORD;
     this.databaseName = DB_NAME;
-    this.databasePort = DB_PORT;
+    this.databasePort = parseInt(tDB_PORT, 10);
     this.mssql = mssql;
   }
 
   async connect() {
-    let port = this.databasePort;
-    // process.env will set this to a string in some cases this is to handle
-    try {
-      port = parseInt(this.databasePort, 10);
-    } catch (e) {
-
-    }
-
     const pool = new this.mssql.ConnectionPool({
       server: this.host,
       user: this.user,
       password: this.password,
       database: this.databaseName,
       domain: this.domain,
-      port,
+      port: this.databasePort,
       options: {
         // the default value for `config.options.enableArithAbort` will change
         // from `false` to `true` in the next major version of `tedious`
-        enableArithAbort: true
-      }
+        enableArithAbort: true,
+      },
     });
     return pool.connect();
   }
