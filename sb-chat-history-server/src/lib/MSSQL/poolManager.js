@@ -7,7 +7,7 @@ module.exports = class MSSQLPoolManager {
     this.domain = DB_DOMAIN === '' ? undefined : DB_DOMAIN;
     this.password = DB_PASSWORD;
     this.databaseName = DB_NAME;
-    this.databasePort = parseInt(tDB_PORT, 10);
+    this.databasePort = parseInt(DB_PORT, 10);
     this.mssql = mssql;
   }
 
