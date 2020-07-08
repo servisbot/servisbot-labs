@@ -16,7 +16,7 @@ const styleHtml = async html => new Promise((resolve, reject) => {
     juice.juiceResources(
       html,
       {
-        webResources: { relativeTo: path.resolve('public') }
+        webResources: { relativeTo: path.resolve('public') },
       },
       async (err, result) => {
         resolve(result);
@@ -32,8 +32,11 @@ const txOptions = {
   port: process.env.SMTP_PORT,
   auth: {
     user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
+    pass: process.env.SMTP_PASS,
+  },
+  // https://nodemailer.com/smtp/
+  secure: false,
+  tls: { rejectUnauthorized: false },
 };
 const transporter = nodemailer.createTransport(txOptions);
 
@@ -44,12 +47,11 @@ module.exports = async (template, data) => {
   const { attachments, html } = await renderSubmission(template, data);
   const styledHtml = await styleHtml(html);
 
-
   return transporter.sendMail({
     from: process.env.MAIL_FROM,
     to: process.env.MAIL_TO,
     subject: process.env.MAIL_SUBJECT,
     html: styledHtml,
-    attachments
+    attachments,
   });
 };

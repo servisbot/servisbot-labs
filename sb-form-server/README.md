@@ -36,6 +36,10 @@ It was built for the use with a ServisBOT's conversational bots via DetailView M
   ```sh
   docker build -t sb-form-server .
   ```
+  ```sh
+  podman  build -t sb-form-server .
+  ```
+  
 * Copy paste following into your terminal
   ```sh
   docker run -p "3000:3000" \
@@ -61,6 +65,15 @@ docker run -p "3000:3000" \
   --name=sb-form-server sb-form-server:latest \
   --rm
 ```
+podman
+```
+  sudo podman run -p "3000:3000" \
+  -v ABSOLUTE_PATH_FORMS_DEFINITIONS_DIR:/opt/sb-form-templates:Z \
+  --env-file=.env \
+  --name=-form-server \
+  --rm sb-form-server:latest 
+```
+
 In your browser navigate to http://localhost:3000/forms/{FILE_NAME_OF_YOUR_FORM}
 
 ## Usage With ServisBOT
