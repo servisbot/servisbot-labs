@@ -1,0 +1,65 @@
+service: ${self:custom.service}
+plugins:
+  - serverless-pseudo-parameters
+  - serverless-parameters
+
+custom:
+  service: stg-servisbot-webspray
+  region: ${opt:region, 'us-east-1'}
+  bucket: emailstorage
+  organization: ${opt:organization}
+  servisbot_webhook_api_key: ${opt:api_key}
+  servisbot_region: ${opt:sb_region}
+  servisbot_bot_endpoint: ${opt:bot_endpoint}
+
+  parameters:
+    Service:
+      Type: String
+      Default: ${self:service}
+    Bucket:
+      Type: String
+      Default: ${self:custom.bucket}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ${self:custom.region}
+  stackName: ${self:service}-${self:custom.organization}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "arn:aws:s3:::${self:custom.service}-${self:custom.bucket}-${self:custom.organization}*"
+  environment:
+    SB_REGION: us-1 
+    SERVISBOT_WEBHOOK_API_KEY: ${self:custom.servisbot_webhook_api_key}
+    SERVISBOT_WEBHOOK_URL: https://engagement.${self:custom.servisbot_region}.servisbot.com/picard/v1/engage/${self:custom.servisbot_bot_endpoint}
+  stackTags: 
+    service: ${self:service}
+  s3:
+    EmailStorageBucket:
+      name: ${self:custom.service}-${self:custom.bucket}-${self:custom.organization}
+
+functions:
+  RelayEmail:
+    handler: src/handler/s3.handler   
+    events:
+      - s3:
+          bucket: EmailStorageBucket
+          event: s3:ObjectCreated:*    
+    timeout: 15
+
+  HandleBotResponse:
+    handler: src/handler/api.handler
+    events:
+      - http: "POST /HandleBotResponse"
+
+package:
+  exclude:
+    - ./*
+    - ./*/**
+  include:
+    - src/**
+    - node_modules/**
+    - '!node_modules/serverless-parameters'
+    - '!node_modules/serverless-pseudo-parameters'
