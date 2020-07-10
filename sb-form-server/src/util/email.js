@@ -8,8 +8,6 @@ assert.ok(process.env.MAIL_TO, 'Missing MAIL_TO environment variable');
 assert.ok(process.env.MAIL_FROM, 'Missing MAIL_FROM environment variable');
 assert.ok(process.env.SMTP_HOST, 'Missing SMTP_HOST environment variable');
 assert.ok(process.env.SMTP_PORT, 'Missing SMTP_PORT environment variable');
-assert.ok(process.env.SMTP_USER, 'Missing SMTP_USER environment variable');
-assert.ok(process.env.SMTP_PASS, 'Missing SMTP_PASS environment variable');
 
 const styleHtml = async html => new Promise((resolve, reject) => {
   try {
