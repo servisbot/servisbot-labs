@@ -27,17 +27,28 @@ const styleHtml = async html => new Promise((resolve, reject) => {
   }
 });
 
-const txOptions = {
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  // https://nodemailer.com/smtp/
-  secure: false,
-  tls: { rejectUnauthorized: false },
-};
+let txOptions;
+// Authenticated SMTP
+if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+  txOptions = {
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+    secure: false,
+    tls: { rejectUnauthorized: false },
+  };
+} else {
+  // Anonymous (auth at source)
+  txOptions = {
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: false,
+    tls: { rejectUnauthorized: false },
+  };
+}
 const transporter = nodemailer.createTransport(txOptions);
 
 const renderSubmission = async (template, submission) => submissionView.render(template, submission);
