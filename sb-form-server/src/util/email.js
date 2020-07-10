@@ -52,7 +52,6 @@ const transporter = nodemailer.createTransport(txOptions);
 const renderSubmission = async (template, submission) => submissionView.render(template, submission);
 
 module.exports = async (template, data) => {
-  console.log(data);
   const { attachments, html } = await renderSubmission(template, data);
   const styledHtml = await styleHtml(html);
 
