@@ -1,12 +1,13 @@
 /* eslint-disable no-undef */
 
 // Takes a data URI and returns the Data URI corresponding to the resized image at the wanted size.
-function resizedataURL(imageB64, wantedWidth, wantedHeight) {
+function resizedataURL(imageB64, wantedHeight) {
   const image = new Image();
   image.src = imageB64;
-
+  const ratio = image.width / image.height;
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
+  const wantedWidth = wantedHeight * ratio;
   canvas.width = wantedWidth;
   canvas.height = wantedHeight;
   context.drawImage(image, 0, 0, wantedWidth, wantedHeight);
@@ -24,7 +25,7 @@ window.onload = () => {
       for (let index = 0; index < value.length; index += 1) {
         const val = value[index];
         if (val.storage === 'base64' && val.size > 200000 && val.type.includes('image')) {
-          val.url = val.size > 1500 ? resizedataURL(val.url, 800, 800) : val.url;
+          val.url = val.size > 1500 ? resizedataURL(val.url, 600) : val.url;
           val.size = Math.round(val.url.length * (3 / 4));
         }
       }
