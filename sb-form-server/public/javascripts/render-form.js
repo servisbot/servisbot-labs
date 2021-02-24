@@ -25,7 +25,7 @@ window.onload = () => {
       for (let index = 0; index < value.length; index += 1) {
         const val = value[index];
         if (val.storage === 'base64' && val.size > 200000 && val.type.includes('image')) {
-          val.url = val.size > 1500 ? resizedataURL(val.url, 600) : val.url;
+          val.url = val.size > 1500 ? resizedataURL(val.url, 1000) : val.url;
           val.size = Math.round(val.url.length * (3 / 4));
         }
       }
