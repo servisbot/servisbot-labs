@@ -19,10 +19,15 @@ router.get('/:id', async (req, res) => {
   });
 });
 
-router.post('/:id/submission', (req, res) => {
+router.post('/:id/submission', async (req, res) => {
   const { data } = req.body;
-  email(req.params.id, data);
-  res.status(200).send('ok');
+  try {
+    const result = await email(req.params.id, data);
+    res.status(200).send('ok');
+  } catch (err) {
+    console.error('Error sending email', err);
+    res.status(400).send('Submission has failed, please try again or contact support');
+  }
 });
 
 module.exports = router;

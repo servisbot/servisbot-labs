@@ -5,6 +5,8 @@ sb-form-templates
 test/fixtures/templates/templates
 outputs/
 .vscode
+.local
+.env.stg
 ### macOS ###
 # General
 .DS_Store

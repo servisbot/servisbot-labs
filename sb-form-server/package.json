@@ -5,7 +5,8 @@
   "scripts": {
     "mount-dev": "ln -s test/fixtures/templates sb-form-templates",
     "start": "node index.js",
-    "dev": "npm run mount-dev && NODE_ENV=development nodemon -r dotenv/config index.js",
+    "dev-mount": "npm run mount-dev && NODE_ENV=development nodemon -r dotenv/config index.js",
+    "dev": "NODE_ENV=development nodemon -r dotenv/config index.js",
     "lint": "./node_modules/.bin/eslint src test",
     "test": "node_modules/.bin/mocha --recursive test",
     "depcheck": "./node_modules/.bin/depcheck --ignores pre-commit,pug,dotenv ."
@@ -14,6 +15,7 @@
     "canvas": "^2.6.1",
     "debug": "~4.1.1",
     "express": "~4.17.1",
+    "gm": "^1.23.1",
     "http-errors": "~1.7.3",
     "jsdom": "^16.2.0",
     "juice": "^6.0.0",

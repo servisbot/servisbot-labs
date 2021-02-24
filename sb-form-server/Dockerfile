@@ -1,3 +1,4 @@
+FROM dpokidov:imagemagick
 FROM node:lts
 
 # Create app directory

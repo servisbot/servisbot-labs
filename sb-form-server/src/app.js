@@ -14,7 +14,16 @@ app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(express.json({ limit: '20mb' }));
+
+app.use(express.json({ limit: '70mb' }));
+app.use((error, req, res, next) => {
+  if (error.name === 'PayloadTooLargeError') {
+    res.status(400).send('Your attached Images are too large.');
+  } else {
+    next(error);
+  }
+});
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../public')));
 
