@@ -63,7 +63,14 @@ const sendEmail = async (attachments, html) => {
       attachments,
     };
     transporter.sendMail(mailOptions, (err, res) => {
-      if (err) reject(new Error(process.env.SUBMISSION_FAILED_TO_EMAIL));
+      if (err) {
+        console.error('error SendMail', err);
+        if (err.message.includes('Message exceeded max message size')) {
+          reject(new Error(process.env.SUBMISSION_TOO_LARGE_TO_EMAIL));
+          return;
+        }
+        reject(new Error(process.env.SUBMISSION_FAILED_TO_EMAIL));
+      }
       resolve(res);
     });
   });
