@@ -22,11 +22,12 @@ router.get('/:id', async (req, res) => {
 router.post('/:id/submission', async (req, res) => {
   const { data } = req.body;
   try {
-    const result = await email(req.params.id, data);
+    const { attachments, html } = await email.renderSubmission(req.params.id, data);
+    await email.sendEmail(attachments, html);
     res.status(200).send('ok');
-  } catch (err) {
-    console.error('Error sending email', err);
-    res.status(400).send('Submission has failed, please try again or contact support');
+  } catch (error) {
+    console.error('Error sending email', error);
+    res.status(400).send(error.message);
   }
 });
 

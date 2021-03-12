@@ -1,16 +1,15 @@
 /* eslint-disable no-undef */
-
+const DEFAULT_WIDTH = 1024;
 // Takes a data URI and returns the Data URI corresponding to the resized image at the wanted size.
-function resizedataURL(imageB64, wantedHeight) {
+function resizeDataURL(imageB64, desiredWidth = DEFAULT_WIDTH) {
   const image = new Image();
   image.src = imageB64;
-  const ratio = image.width / image.height;
+  const ratio = image.height / image.width;
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
-  const wantedWidth = wantedHeight * ratio;
-  canvas.width = wantedWidth;
-  canvas.height = wantedHeight;
-  context.drawImage(image, 0, 0, wantedWidth, wantedHeight);
+  canvas.height = desiredWidth * ratio;
+  canvas.width = desiredWidth;
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
   const dataURI = canvas.toDataURL();
   return dataURI;
 }
@@ -24,8 +23,10 @@ window.onload = () => {
       if (!Array.isArray(value)) return;
       for (let index = 0; index < value.length; index += 1) {
         const val = value[index];
+        // for each image file larger than 200kb, value.size is form.io detected file
         if (val.storage === 'base64' && val.size > 200000 && val.type.includes('image')) {
-          val.url = val.size > 1500 ? resizedataURL(val.url, 1000) : val.url;
+          val.url = resizeDataURL(val.url);
+          // recalculate new size for form.io, Base64 encoded data is approximately 33% larger than original data
           val.size = Math.round(val.url.length * (3 / 4));
         }
       }
