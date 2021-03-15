@@ -27,7 +27,8 @@ window.onload = () => {
         if (val.storage === 'base64' && val.size > 200000 && val.type.includes('image')) {
           val.url = resizeDataURL(val.url);
           // recalculate new size for form.io, Base64 encoded data is approximately 33% larger than original data
-          val.size = Math.round(val.url.length * (3 / 4));
+          const contentWithouthMime = val.url.split(',')[1];
+          val.size = window.atob(contentWithouthMime).length;
         }
       }
     });
