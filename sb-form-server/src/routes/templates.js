@@ -19,10 +19,16 @@ router.get('/:id', async (req, res) => {
   });
 });
 
-router.post('/:id/submission', (req, res) => {
+router.post('/:id/submission', async (req, res) => {
   const { data } = req.body;
-  email(req.params.id, data);
-  res.status(200).send('ok');
+  try {
+    const { attachments, html } = await email.renderSubmission(req.params.id, data);
+    await email.sendEmail(attachments, html);
+    res.status(200).send('ok');
+  } catch (error) {
+    console.error('Error sending email', error);
+    res.status(400).send(error.message);
+  }
 });
 
 module.exports = router;

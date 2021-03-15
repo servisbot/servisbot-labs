@@ -5,7 +5,8 @@
   "scripts": {
     "mount-dev": "ln -s test/fixtures/templates sb-form-templates",
     "start": "node index.js",
-    "dev": "npm run mount-dev && NODE_ENV=development nodemon -r dotenv/config index.js",
+    "dev-mount": "npm run mount-dev && NODE_ENV=development nodemon -r dotenv/config index.js",
+    "dev": "NODE_ENV=development nodemon -r dotenv/config index.js",
     "lint": "./node_modules/.bin/eslint src test",
     "test": "node_modules/.bin/mocha --recursive test",
     "depcheck": "./node_modules/.bin/depcheck --ignores pre-commit,pug,dotenv ."

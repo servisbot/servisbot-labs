@@ -11,13 +11,12 @@ const { JSDOM } = jsdom;
 const baseUrl = 'http://local';
 
 const render = async (templateName, submission) => new Promise((resolve, reject) => {
-  const rejectTimeout = setTimeout(() => (reject(new Error('Failed to render submission in jsdom'))), 5000);
-
+  const rejectTimeout = setTimeout(() => (reject(new Error(process.env.SUBMISSION_RENDER_ERROR_MESSAGE))), 5000);
   const renderForm = `
     window.onload = function() {
         Formio.createForm(document.getElementById('formio'), Form, {
           readOnly: true,
-          renderMode: 'html'
+          renderMode: 'html',
         })
         .then(form => {
           form.setSubmission({ data: Submission})

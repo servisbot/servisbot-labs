@@ -51,15 +51,32 @@ const transporter = nodemailer.createTransport(txOptions);
 
 const renderSubmission = async (template, submission) => submissionView.render(template, submission);
 
-module.exports = async (template, data) => {
-  const { attachments, html } = await renderSubmission(template, data);
-  const styledHtml = await styleHtml(html);
 
-  return transporter.sendMail({
-    from: process.env.MAIL_FROM,
-    to: process.env.MAIL_TO,
-    subject: process.env.MAIL_SUBJECT,
-    html: styledHtml,
-    attachments,
+const sendEmail = async (attachments, html) => {
+  const styledHtml = await styleHtml(html);
+  return new Promise((resolve, reject) => {
+    const mailOptions = {
+      from: process.env.MAIL_FROM,
+      to: process.env.MAIL_TO,
+      subject: process.env.MAIL_SUBJECT,
+      html: styledHtml,
+      attachments,
+    };
+    transporter.sendMail(mailOptions, (err, res) => {
+      if (err) {
+        console.error('error SendMail', err);
+        if (err.message.includes('Message exceeded max message size')) {
+          reject(new Error(process.env.SUBMISSION_TOO_LARGE_TO_EMAIL));
+          return;
+        }
+        reject(new Error(process.env.SUBMISSION_FAILED_TO_EMAIL));
+      }
+      resolve(res);
+    });
   });
+};
+
+module.exports = {
+  sendEmail,
+  renderSubmission,
 };
