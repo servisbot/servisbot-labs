@@ -44,11 +44,7 @@ window.onload = () => {
       if (!Array.isArray(value)) return;
       for (let index = 0; index < value.length; index += 1) {
         const val = value[index];
-        // for each image file larger than 200kb, value.size is form.io detected file
         if (val.storage === 'base64' && val.type.includes('image')) {
-          //         const maxPxSize = 750000;
-          // const imgSize = (img.width * img.height);
-          // localStorage.setItem('imgData', getBase64Image(img, (imgSize / maxPxSize), file.type));
           val.url = resizeDataURL(val.url, maxImgSize);
           val.size = getBase64ImageSize(val.url);
         }
