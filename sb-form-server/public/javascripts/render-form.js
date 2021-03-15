@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const DEFAULT_WIDTH = 1024;
+const DEFAULT_WIDTH = 800;
 // Takes a data URI and returns the Data URI corresponding to the resized image at the wanted size.
 function resizeDataURL(imageB64, desiredWidth = DEFAULT_WIDTH) {
   const image = new Image();
