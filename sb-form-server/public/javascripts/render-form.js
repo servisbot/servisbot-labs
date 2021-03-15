@@ -1,21 +1,42 @@
 /* eslint-disable no-undef */
-const DEFAULT_WIDTH = 800;
+function getBase64ImageSize(b64Image) {
+  const contentWithoutMime = b64Image.split(',')[1];
+  return window.atob(contentWithoutMime).length;
+}
+
+const MAX_EMAIL_SIZE = 5000000;
+const DEFAULT_WIDTH = 1024;
 // Takes a data URI and returns the Data URI corresponding to the resized image at the wanted size.
-function resizeDataURL(imageB64, desiredWidth = DEFAULT_WIDTH) {
+function resizeDataURL(imageB64, maxImgSize) {
   const image = new Image();
   image.src = imageB64;
-  const ratio = image.height / image.width;
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
-  canvas.height = desiredWidth * ratio;
-  canvas.width = desiredWidth;
+
+  const ratio = image.height / image.width;
+  canvas.height = DEFAULT_WIDTH * ratio;
+  canvas.width = DEFAULT_WIDTH;
   context.drawImage(image, 0, 0, canvas.width, canvas.height);
-  const dataURI = canvas.toDataURL();
+  let quality = 1;
+  let dataURI = canvas.toDataURL('image/jpeg', quality);
+  for (let i = 0; i < 9; i += 1) {
+    dataURI = canvas.toDataURL('image/jpeg', quality);
+    const currentSize = getBase64ImageSize(dataURI);
+    if (currentSize < maxImgSize) {
+      return dataURI;
+    }
+    if (currentSize > maxImgSize) {
+      quality -= 0.1;
+    }
+  }
   return dataURI;
 }
 
+
 window.onload = () => {
   Formio.createForm(document.getElementById('formio'), `${window.location.origin}/templates/${formName}`, {}).then((form) => {
+    const maxFiles = document.getElementsByClassName('fileSelector').length;
+    const maxImgSize = MAX_EMAIL_SIZE / maxFiles;
     form.on('change', (event) => {
       const { changed } = event;
       if (!changed) return;
@@ -24,11 +45,12 @@ window.onload = () => {
       for (let index = 0; index < value.length; index += 1) {
         const val = value[index];
         // for each image file larger than 200kb, value.size is form.io detected file
-        if (val.storage === 'base64' && val.size > 200000 && val.type.includes('image')) {
-          val.url = resizeDataURL(val.url);
-          // recalculate new size for form.io, Base64 encoded data is approximately 33% larger than original data
-          const contentWithouthMime = val.url.split(',')[1];
-          val.size = window.atob(contentWithouthMime).length;
+        if (val.storage === 'base64' && val.type.includes('image')) {
+          //         const maxPxSize = 750000;
+          // const imgSize = (img.width * img.height);
+          // localStorage.setItem('imgData', getBase64Image(img, (imgSize / maxPxSize), file.type));
+          val.url = resizeDataURL(val.url, maxImgSize);
+          val.size = getBase64ImageSize(val.url);
         }
       }
     });
