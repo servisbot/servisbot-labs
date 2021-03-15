@@ -4,7 +4,7 @@ function getBase64ImageSize(b64Image) {
   return window.atob(contentWithoutMime).length;
 }
 
-const MAX_EMAIL_SIZE = 4000000;
+const MAX_EMAIL_SIZE = 1000000 - 3000;
 const DEFAULT_WIDTH = 1024;
 // Takes a data URI and returns the Data URI corresponding to the resized image at the wanted size.
 function resizeDataURL(imageB64, maxImgSize) {
