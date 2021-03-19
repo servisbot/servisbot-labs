@@ -55,6 +55,7 @@ export DB_IMPLEMENTATION=MYSQL
 ```
 
 Optional `DB_DOMAIN` environment variable is supported to MSSQL running in AActive Directory Domain User authentication
+Optional `DB_SID` environment variable is supported for Oracle
 
 # Running the Node app as a container
 
@@ -68,7 +69,23 @@ Or for MSSQL
 * `docker-compose -f development/mssql/docker-compose-combined.yaml up --build`
 * `curl -v http://localhost:8080/v1/ping`
 
-
+# Using your own Database
+You can use your own database with these steps:
+1. Configure your database with required tables first.
+2. Build the image for specific database implementation and run it using example env vars:
+## MYSQL
+database setup script: development/mysql/init_db.sql
+docker build -t chat-history-server -f Dockerfile.MYSQL .
+docker run -p 8080:8080 --rm -it --env-file=./development/mysql/sample.env chat-history-server:latest
+## MSSQL
+database setup script: development/mssql/init_db.sql
+docker build -t chat-history-server -f Dockerfile.MSSQL .
+docker run -p 8080:8080 --rm -it --env-file=./development/mssql/sample.env chat-history-server:latest
+## ORACLE
+database setup script: development/oracle/init_db.sql
+docker build -t chat-history-server -f Dockerfile.ORACLE .
+docker run -p 8080:8080 --rm -it --env-file=./development/oracle/sample.env chat-history-server:latest
+ 
 ### Testing
 
 Once you have the docker containter running the main application, you can test the application / database configuration by sending a GET request to the following url: `localhost:8080/v1/ping`

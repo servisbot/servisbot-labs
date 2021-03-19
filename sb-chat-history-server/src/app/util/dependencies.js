@@ -2,12 +2,20 @@
 const logger = require('loglevel');
 const assert = require('assert');
 
-const mssql = require('mssql');
-const myssql = require('mysql');
 const parseMessages = require('../util/parseMessages');
 
-const databases = { MYSQL: myssql, MSSQL: mssql };
-
+const loadDatabaseClient = (dbImplementation) => {
+  switch (dbImplementation) {
+    case 'MYSQL':
+      return require('mysql');
+    case 'MSSQL':
+      return require('mssql');
+    case 'ORACLE':
+      return require('oracledb');
+    default:
+      throw new Error('Unsupported DB_IMPLEMENTATION')
+  }
+}
 //  Create the required dependencies for the main application
 const createDependencies = ({ env }) => {
   logger.setLevel(process.env.LOG_LEVEL || 'info');
@@ -23,14 +31,19 @@ const createDependencies = ({ env }) => {
   const ConnectionPool = require(`../../lib/${DB_IMPLEMENTATION}/poolManager`);
   assert.ok(ConnectionPool, `Could not load DB Pool Manager for DB_IMPLEMENTATION of ${DB_IMPLEMENTATION}`);
 
-  const databaseImplementation = databases[DB_IMPLEMENTATION];
+  const databaseImplementation = loadDatabaseClient(DB_IMPLEMENTATION);
   assert(databaseImplementation, `Could not find database implementation for ${DB_IMPLEMENTATION}`);
   const connectionPool = new ConnectionPool(env, databaseImplementation);
 
   // eslint-disable-next-line import/no-dynamic-require, global-require
   const Database = require(`../../lib/${DB_IMPLEMENTATION}/database`);
   return {
-    logger, connectionPool, Database, schema, queryLib, parseMessages
+    logger,
+    connectionPool,
+    Database,
+    schema,
+    queryLib,
+    parseMessages,
   };
 };
 

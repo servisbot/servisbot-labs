@@ -6,7 +6,9 @@ services:
       - "1433:1433"
     restart: on-failure
   rchs-local:
-    build: ../../
+    build:
+      context: ../../
+      dockerfile: Dockerfile.MSSQL
     ports:
       - "8080:8080"
     env_file: 

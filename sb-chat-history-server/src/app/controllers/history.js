@@ -1,6 +1,6 @@
 const safeAccess = require('../util/safe-access');
 
-const History = ({ deps }) => {
+const History = ({ deps, env }) => {
   const {
     logger, queryLib, db, parseMessages
   } = deps;

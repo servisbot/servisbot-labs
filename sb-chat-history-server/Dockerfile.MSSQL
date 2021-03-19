@@ -10,6 +10,8 @@ WORKDIR /opt/
 
 # Install app dependencies
 RUN npm i -q --production
+RUN npm i mssql
+
 
 ENV NODE_ENV=production
 
