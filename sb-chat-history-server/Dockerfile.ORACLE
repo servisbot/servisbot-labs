@@ -1,0 +1,31 @@
+FROM oraclelinux:8
+
+# Create app directory
+RUN dnf -y install oracle-instantclient-release-el8
+RUN dnf -y install oracle-instantclient-basic
+RUN dnf -y install @nodejs:14
+RUN export PATH=/usr/lib/oracle/21/client64/bin:$PATH
+
+# RUN yum update -y 
+# RUN yum install -y oracle-release-el7 
+# RUN yum install -y oracle-nodejs-release-el7 
+# RUN yum install -y --disablerepo=ol7_developer_EPEL nodejs 
+# RUN yum install -y oracle-instantclient19.3-basic.x86_64 
+# RUN yum clean all 
+RUN node --version 
+RUN npm --version
+
+RUN mkdir -p /opt/
+COPY src /opt/src
+COPY swagger /opt/swagger
+
+COPY index.js package.json LICENSE package-lock.json /opt/
+WORKDIR /opt/
+
+# Install app dependencies
+RUN npm i -q --production
+RUN npm i oracledb
+
+ENV NODE_ENV=production
+
+CMD [ "npm", "start" ]

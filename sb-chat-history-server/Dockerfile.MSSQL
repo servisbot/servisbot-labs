@@ -1,4 +1,4 @@
-FROM node:10.16.3-alpine
+FROM node:14-alpine
 
 # Create app directory
 RUN mkdir -p /opt/
@@ -10,6 +10,8 @@ WORKDIR /opt/
 
 # Install app dependencies
 RUN npm i -q --production
+RUN npm i mssql
+
 
 ENV NODE_ENV=production
 

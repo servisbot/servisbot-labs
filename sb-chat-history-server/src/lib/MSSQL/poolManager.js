@@ -1,6 +1,8 @@
 module.exports = class MSSQLPoolManager {
   constructor(env, mssql) {
-    const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT, DB_DOMAIN } = env;
+    const {
+      DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT, DB_DOMAIN
+    } = env;
     this.mssql = mssql;
     this.host = DB_HOST;
     this.user = DB_USER;
@@ -8,7 +10,6 @@ module.exports = class MSSQLPoolManager {
     this.password = DB_PASSWORD;
     this.databaseName = DB_NAME;
     this.databasePort = parseInt(DB_PORT, 10);
-    this.mssql = mssql;
   }
 
   async connect() {

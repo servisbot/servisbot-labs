@@ -1,0 +1,17 @@
+FROM node:14-alpine
+
+# Create app directory
+RUN mkdir -p /opt/
+COPY src /opt/src
+COPY swagger /opt/swagger
+
+COPY index.js package.json LICENSE package-lock.json /opt/
+WORKDIR /opt/
+
+# Install app dependencies
+RUN npm i -q --production
+RUN npm i mysql
+
+ENV NODE_ENV=production
+
+CMD [ "npm", "start" ]

@@ -15,6 +15,7 @@ const createEnvironment = () => {
     DB_CONNECTION_LIMIT: process.env.DB_CONNECTION_LIMIT || 10,
     APP_VERSION: process.env.APP_VERSION,
     DB_IMPLEMENTATION: process.env.DB_IMPLEMENTATION,
+    DB_SID: process.env.DB_SID || ''
   };
 
   Object.keys(env).forEach((key) => {
