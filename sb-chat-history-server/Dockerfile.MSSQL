@@ -1,4 +1,4 @@
-FROM node:10.16.3-alpine
+FROM node:14-alpine
 
 # Create app directory
 RUN mkdir -p /opt/

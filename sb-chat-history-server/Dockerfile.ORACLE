@@ -3,7 +3,7 @@ FROM oraclelinux:8
 # Create app directory
 RUN dnf -y install oracle-instantclient-release-el8
 RUN dnf -y install oracle-instantclient-basic
-RUN dnf -y install @nodejs:12
+RUN dnf -y install @nodejs:14
 RUN export PATH=/usr/lib/oracle/21/client64/bin:$PATH
 
 # RUN yum update -y 
