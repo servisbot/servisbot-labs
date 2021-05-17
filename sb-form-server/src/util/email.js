@@ -52,12 +52,12 @@ const transporter = nodemailer.createTransport(txOptions);
 const renderSubmission = async (template, submission) => submissionView.render(template, submission);
 
 
-const sendEmail = async (attachments, html) => {
+const sendEmail = async (attachments, html, emailTo) => {
   const styledHtml = await styleHtml(html);
   return new Promise((resolve, reject) => {
     const mailOptions = {
       from: process.env.MAIL_FROM,
-      to: process.env.MAIL_TO,
+      to: emailTo,
       subject: process.env.MAIL_SUBJECT,
       html: styledHtml,
       attachments,
