@@ -76,7 +76,15 @@ const sendEmail = async (attachments, html, emailTo) => {
   });
 };
 
+const getEmailToAddress = (envVar) => {
+  if (process.env[envVar]) {
+    return process.env[envVar];
+  }
+  return process.env.MAIL_TO;
+};
+
 module.exports = {
   sendEmail,
   renderSubmission,
+  getEmailToAddress
 };
