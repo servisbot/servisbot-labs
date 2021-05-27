@@ -23,7 +23,9 @@ router.post('/:id/submission', async (req, res) => {
   const { data } = req.body;
   try {
     const { attachments, html } = await email.renderSubmission(req.params.id, data);
-    await email.sendEmail(attachments, html);
+    const { MAIL_TO } = data;
+    const emailTo = email.getEmailToAddress(MAIL_TO);
+    await email.sendEmail(attachments, html, emailTo);
     res.status(200).send('ok');
   } catch (error) {
     console.error('Error sending email', error);
