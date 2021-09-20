@@ -101,3 +101,7 @@ If you are using Classic Flow, you should use a markupInteraction node. This wil
 3, User Freetyped before instead of displaying the form.
 
 
+# Version verification
+Add semantic version or an update date 
+
+to public/javascripts/render-form.js file.

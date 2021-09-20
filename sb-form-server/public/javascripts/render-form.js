@@ -1,3 +1,7 @@
+/*
+  Updated: 28/05/2020
+*/
+
 /* eslint-disable no-undef */
 function getBase64ImageSize(b64Image) {
   const contentWithoutMime = b64Image.split(',')[1];
