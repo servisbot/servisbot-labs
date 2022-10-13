@@ -13,7 +13,10 @@ const app = express();
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+if(process.env.NODE_ENV !== 'production') {
+  app.use(logger('dev'));
+}
+
 
 app.use(express.json({ limit: '70mb' }));
 app.use((error, req, res, next) => {
