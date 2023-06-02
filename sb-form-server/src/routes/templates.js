@@ -22,11 +22,19 @@ router.get('/:id', async (req, res) => {
 router.post('/:id/submission', async (req, res) => {
   const { data } = req.body;
   try {
-    const { attachments, html } = await email.renderSubmission(req.params.id, data);
-    const { MAIL_TO } = data;
-    const emailTo = email.getEmailToAddress(MAIL_TO);
-    await email.sendEmail(attachments, html, emailTo);
-    res.status(200).send('ok');
+    try {
+      const { attachments, html } = await email.renderSubmission(req.params.id, data);
+      const { MAIL_TO } = data;
+      const emailTo = email.getEmailToAddress(MAIL_TO);
+      await email.sendEmail(attachments, html, emailTo);
+      res.status(200).send('ok');
+    }
+    catch (error) {
+      console.error('Error sending email', error);
+      console.warn('Email send failed, attempting to send notification');
+      await email.sendAdminEmail(error.message, data);
+      res.status(400).send(error.message);
+    }
   } catch (error) {
     console.error('Error sending email', error);
     res.status(400).send(error.message);
