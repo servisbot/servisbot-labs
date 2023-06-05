@@ -10,19 +10,20 @@ It was built for the use with a ServisBOT's conversational bots via DetailView M
 ## Prerequisites
 
 * Docker Container Runtime (https://www.docker.com/products/container-runtime)
-* SMTP Server or Relay configuration - host, port, username and password.  
+* SMTP Server or Relay configuration - host, port, username and password.
   Search for "Free SMTP relay" to get number of providers, many offer free accounts.
 
 
 ## Run with Docker
 * Make sure you have docker service installed and running.
 * Download and unzip this project to directory on your machine.
-* Open terminal and navigate to the unzipped directory of this project.   
+* Open terminal and navigate to the unzipped directory of this project.
   `cd $HOME/Downloads/servisbot-labs/sb-form-server`
 * open `.env-example` file with text editor and fill in your details
 `MAIL_TO` - default email address where submission will be sent
 `MAIL_TO_UK` - forms that include hidden field 'MAIL_TO' with value 'MAIL_TO_UK' will use this ENV VAR as recipient email address
 `MAIL_TO_IE` - forms that include hidden field 'MAIL_TO' with value 'MAIL_TO_IE' will use this ENV VAR as recipient email address
+'ADMIN_MAIL_TO' - email address where submission failures will be sent
 
   ```sh
     PORT=3000
@@ -43,7 +44,7 @@ It was built for the use with a ServisBOT's conversational bots via DetailView M
   ```sh
   podman  build -t sb-form-server .
   ```
-  
+
 * Copy paste following into your terminal
   ```sh
   docker run -p "3000:3000" \
@@ -75,7 +76,7 @@ podman
   -v ABSOLUTE_PATH_FORMS_DEFINITIONS_DIR:/opt/sb-form-templates:Z \
   --env-file=.env \
   --name=-form-server \
-  --rm sb-form-server:latest 
+  --rm sb-form-server:latest
 ```
 
 In your browser navigate to http://localhost:3000/forms/{FILE_NAME_OF_YOUR_FORM}
@@ -102,6 +103,6 @@ If you are using Classic Flow, you should use a markupInteraction node. This wil
 
 
 # Version verification
-Add semantic version or an update date 
+Add semantic version or an update date
 
 to public/javascripts/render-form.js file.
