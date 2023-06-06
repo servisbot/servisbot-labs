@@ -9,9 +9,10 @@ const templates = require('../util/templates');
 const { JSDOM } = jsdom;
 
 const baseUrl = 'http://local';
+const renderTimeout = Number(process.env.SUBMISSION_RENDER_TIMEOUT) || 5000;
 
 const render = async (templateName, submission) => new Promise((resolve, reject) => {
-  const rejectTimeout = setTimeout(() => (reject(new Error(process.env.SUBMISSION_RENDER_ERROR_MESSAGE))), 5000);
+  const rejectTimeout = setTimeout(() => (reject(new Error(process.env.SUBMISSION_RENDER_ERROR_MESSAGE))), renderTimeout);
   const renderForm = `
     window.onload = function() {
         Formio.createForm(document.getElementById('formio'), Form, {
