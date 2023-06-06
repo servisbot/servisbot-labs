@@ -21,12 +21,27 @@ router.get('/:id', async (req, res) => {
 
 router.post('/:id/submission', async (req, res) => {
   const { data } = req.body;
+  let error = null;
   try {
     const { attachments, html } = await email.renderSubmission(req.params.id, data);
-    const { MAIL_TO } = data;
-    const emailTo = email.getEmailToAddress(MAIL_TO);
-    await email.sendEmail(attachments, html, emailTo);
-    res.status(200).send('ok');
+  } catch (e) {
+    console.error('Email rendering failed', error);
+    error = e;
+  }
+  try {
+    if(e)
+    {
+      console.log('Attempting to send raw form to admin');
+      await email.sendAdminEmail(e.message, data);
+      res.status(500).send(e.message);
+    }
+    else
+    {
+      const { MAIL_TO } = data;
+      const emailTo = email.getEmailToAddress(MAIL_TO);
+      await email.sendEmail(attachments, html, emailTo);
+      res.status(200).send('ok');
+    }
   } catch (error) {
     console.error('Error sending email', error);
     res.status(400).send(error.message);

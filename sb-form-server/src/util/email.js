@@ -8,6 +8,8 @@ assert.ok(process.env.MAIL_TO, 'Missing MAIL_TO environment variable');
 assert.ok(process.env.MAIL_FROM, 'Missing MAIL_FROM environment variable');
 assert.ok(process.env.SMTP_HOST, 'Missing SMTP_HOST environment variable');
 assert.ok(process.env.SMTP_PORT, 'Missing SMTP_PORT environment variable');
+assert.ok(process.env.ADMIN_MAIL_TO, 'Missing ADMIN_MAIL_TO environment variable');
+assert.ok(process.env.ADMIN_MAIL_SUBJECT, 'Missing ADMIN_MAIL_SUBJECT environment variable');
 
 const styleHtml = async html => new Promise((resolve, reject) => {
   try {
@@ -51,6 +53,27 @@ const transporter = nodemailer.createTransport(txOptions);
 
 const renderSubmission = async (template, submission) => submissionView.render(template, submission);
 
+const sendAdminEmail = async (topic, rawData) => {
+  return new Promise((resolve, reject) => {
+    const mailOptions = {
+      from: process.env.MAIL_FROM,
+      to: process.env.ADMIN_MAIL_TO,
+      subject: `${process.env.ADMIN_MAIL_SUBJECT}:${topic}`,
+      text: `Raw data: ${JSON.stringify(rawData)}`
+    };
+    transporter.sendMail(mailOptions, (err, res) => {
+      if (err) {
+        console.error('error SendMail', err);
+        if (err.message.includes('Message exceeded max message size')) {
+          reject(new Error(process.env.SUBMISSION_TOO_LARGE_TO_EMAIL));
+          return;
+        }
+        reject(new Error(process.env.SUBMISSION_FAILED_TO_EMAIL));
+      }
+      resolve(res);
+    });
+  });
+}
 
 const sendEmail = async (attachments, html, emailTo) => {
   const styledHtml = await styleHtml(html);
@@ -84,6 +107,7 @@ const getEmailToAddress = (envVar) => {
 };
 
 module.exports = {
+  sendAdminEmail,
   sendEmail,
   renderSubmission,
   getEmailToAddress
